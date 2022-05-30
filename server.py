@@ -1,74 +1,59 @@
-'''
-import socket
-from socket import socket as soc
-from datetime import datetime, timedelta
+from datetime import datetime
+import time
+import socket as soc
+import json
+from datetime import datetime
+from connection import Connection
+ 
+ 
 
-class Server:
-    HOST = '127.0.0.1'
-    PORT = 12345
 
-    def __init__(self, version='1.0.0', HOST='127.0.0.1', PORT=1234):
-        self.version = version
-        self.time = datetime.now()
-        self.server = None
 
-    def __enter__(self):
-        self.server = soc.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.bind((self.HOST, self.PORT))
-        self.listen()
-        conn, addr = self.accept()
-        with conn:
-            print(f"Connected by: {addr}")
-            while True:
-                data = conn.recv(1024)
-                if not data:
-                    print("Connection has not been established.")
-                    break
-                conn.sendall(data)
-        
-    def __exit__(self, exc_type,exc_val,exc_tb):
-        if self.server:
-            self.server.close()
 
-    def connect(self):
-        
-        self.bind((self.HOST, self.PORT))
-        self.listen()
-        conn, addr = self.accept()
-        with conn:
-            print(f"Connected by: {addr}")
-            while True:
-                data = conn.recv(1024)
-                if not data:
+def uptime(server):
+    print(f"this is type of {type(datetime.now().time())} and value of {datetime.now().time()}")
+    print(f"This is type of server.time {type((server.time))} and value of {server.time}")
+    print(f"that is your server time: {time.time()-server.time}")
+    return time.time()-server.time
+    #return datetime.combine(datetime.now()) - datetime.combine(server.time)
+
+def info(server):
+    return("""
+    Server's creation time: {server.time}
+    Server version: {server.version} 
+    """)
+def help():
+    return('''
+    You can choose between four commands to interact with server:
+    - uptime - shows server lifte time
+    - info - returning information about server
+    - stop - stopping server and client works
+    - help - shows available commands 
+    ''')
+
+def main():
+    server = Connection(host='127.0.0.1', port=1598, buffer=1024, encoder='utf-8')
+
+    
+    with server as sc:
+        print(f"Connected by {server.address}")
+        while True:
+            data = sc.recv_data()
+            if not data:
+                break
+            choice = input("What would you like to do")
+            match choice:
+                case "uptime":
+                    print(uptime(sc))
                     
+                case "info":
+                    return info(sc)
+                case "help":
+                    help()
+                case "stop":
+                    print("Server disconnecting...")
                     break
-                conn.sendall(data)
-            
-    def uptime(self):
-        """
-        commond which returns server lifetime
-        """
-        current_time = datetime.now()
-        lifetime = current_time - self.time
-        return lifetime      
+                case other:
+                    print("there is not such command available")
 
-    def info(self):
-        return f"Server has been established at {self.time} and current version is {self.version}"
-
-    def help(self):
-        return f"""
-
-        commands list:
-        1) uptime - command which returns lifetime of a server
-        2) info - command which returns information about lifetime server and current version of it
-        3) help - command which returns list of commands available for user 
-        4) stop - commmand which stops server and client """
-
-    def stop(self):
-        pass
-
-server = Server()
-server.__enter__()
-
-#server.connect()
-'''
+main()
