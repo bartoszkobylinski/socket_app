@@ -48,7 +48,7 @@ class Connection:
         return json.loads(self.connection.recv(self.buffer).decode(self.encoder))
     
     def info(self):
-        server_established_time = strftime("%a, %d %b %Y %H:%M:%S + 0000", time.gmtime(self.time))
+        server_established_time = strftime("%a, %d %b %Y %H:%M:%S", time.gmtime(self.time))
         return f"Server {self.version} has been established at {server_established_time}."
 
     def help(self):
