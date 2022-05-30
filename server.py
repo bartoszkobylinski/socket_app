@@ -20,7 +20,7 @@ def main():
                 break
             match data:
                 case "uptime":
-                    message = time.time() - sc.time
+                    message = f"{round(time.time() - sc.time, 2)}s"
                     sc.send_json(message)
                 case "info":
                     message = sc.info()

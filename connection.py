@@ -1,11 +1,12 @@
 import socket as soc
 import time
 import json
+from time import strftime
 
 
 class Connection:
  
-    def __init__(self, host='127.0.0.1', port=3324, buffer=1024, encoder='utf-8', connection_type="SERVER"):
+    def __init__(self, host='127.0.0.1', port=3394, buffer=1024, encoder='utf-8', connection_type="SERVER"):
         self.host = host
         self.port = port
         self.buffer = buffer
@@ -47,7 +48,8 @@ class Connection:
         return json.loads(self.connection.recv(self.buffer).decode(self.encoder))
     
     def info(self):
-        return f"Server {self.version} has been established at {self.time} "
+        server_established_time = strftime("%a, %d %b %Y %H:%M:%S + 0000", time.gmtime(self.time))
+        return f"Server {self.version} has been established at {server_established_time}."
 
     def help(self):
         return '''
