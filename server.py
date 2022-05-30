@@ -7,32 +7,8 @@ from connection import Connection
  
  
 
-
-
-
-def uptime(server):
-    print(f"this is type of {type(datetime.now().time())} and value of {datetime.now().time()}")
-    print(f"This is type of server.time {type((server.time))} and value of {server.time}")
-    print(f"that is your server time: {time.time()-server.time}")
-    return time.time()-server.time
-    #return datetime.combine(datetime.now()) - datetime.combine(server.time)
-
-def info(server):
-    return("""
-    Server's creation time: {server.time}
-    Server version: {server.version} 
-    """)
-def help():
-    return('''
-    You can choose between four commands to interact with server:
-    - uptime - shows server lifte time
-    - info - returning information about server
-    - stop - stopping server and client works
-    - help - shows available commands 
-    ''')
-
 def main():
-    server = Connection(host='127.0.0.1', port=1598, buffer=1024, encoder='utf-8')
+    server = Connection()
 
     
     with server as sc:
@@ -40,16 +16,18 @@ def main():
         while True:
             data = sc.recv_data()
             if not data:
+                print("There were some problem with connection. You need to connect again")
                 break
-            choice = input("What would you like to do")
-            match choice:
+            match data:
                 case "uptime":
-                    print(uptime(sc))
-                    
+                    message = time.time() - sc.time
+                    sc.send_json(message)
                 case "info":
-                    return info(sc)
+                    message = sc.info()
+                    sc.send_json(message)
                 case "help":
-                    help()
+                    message = sc.help()
+                    sc.send_json(message)
                 case "stop":
                     print("Server disconnecting...")
                     break
