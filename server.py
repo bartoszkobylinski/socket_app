@@ -31,7 +31,22 @@ def main():
                 case "stop":
                     print("Server disconnecting...")
                     break
+                case "login":
+                    pass
+                case "logout":
+                    pass
+                case "send_mail":
+                    pass
+                case "edit user":
+                    pass
+                case "change password":
+                    pass
+
+
+
+
                 case other:
-                    print("there is not such command available")
+                    message = "there is not such command available"
+                    sc.send_json(message)
 
 main()
