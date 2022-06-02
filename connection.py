@@ -6,7 +6,7 @@ from time import strftime
 
 class Connection:
  
-    def __init__(self, host='127.0.0.1', port=4875, buffer=1024, encoder='utf-8', connection_type="SERVER"):
+    def __init__(self, host='127.0.0.1', port=7275, buffer=1024, encoder='utf-8', connection_type="SERVER"):
         self.host = host
         self.port = port
         self.buffer = buffer
@@ -45,7 +45,7 @@ class Connection:
         self.connection.send(data.encode(self.encoder))
  
     def recv_data(self):
-        return json.loads(self.connection.recv(self.buffer).decode(self.encoder))
+        return json.load(self.connection.recv(self.buffer).decode(self.encoder))
     
     def info(self):
         server_established_time = strftime("%a, %d %b %Y %H:%M:%S", time.gmtime(self.time))
@@ -59,8 +59,7 @@ class Connection:
             - stop - stopping server and client works
             - help - shows available commands 
             '''
-    
-    
+
     
     def __str__(self) -> str:
         return f'Server connected at host: {self.host}, port:{self.port} and decode: {self.encoder}'
