@@ -6,7 +6,7 @@ from datetime import datetime
 from connection import Connection
 from database import add_to_database, check_database, create_databse
 from user import User
- 
+from os.path import exists
  
 
 def main():
@@ -15,7 +15,9 @@ def main():
     
     with server as sc:
         print(f"Connected by {server.address}")
-        create_databse()
+        database_exists = exists('database.json')
+        if not database_exists:
+            create_databse()
         while True:
             data = sc.recv_data()
             if not data:
@@ -36,12 +38,13 @@ def main():
                     break
                 case 'create_user':
                     user = User(name = data.get('name'), password=data.get('password'))
-                    if user.name in check_database(user.name):
+                    print(f"User added such information name: {user.name} and password {user.password}.")
+                    if not user.name in check_database(user.name):
+                        add_to_database(user)
+                        print("New user has been added")
+                    else:
                         message = "user is already in database. Would you like to login instead of creating user?"
                         sc.send_json(message)
-                    else:
-                        print("adding to database")
-                        add_to_database(user)
                 case "login":
                     pass                    
                 case "logout":

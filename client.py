@@ -37,9 +37,8 @@ with client as c:
         elif choice.get('choice','') == 'create_user':
             name = input("What is your name?: ")
             password = input("What password would you like to have?: ")
-            c.send_json({'choice':choice,'name': name})
+            c.send_json({'choice':choice,'name': name, 'password': password})
             print("tu bylem")
-        print("wyszedlem z petli")
         c.send_json(choice)
         print("tu cos jestem")
         data = c.recv_data()
