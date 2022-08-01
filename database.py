@@ -4,6 +4,7 @@ import json
 
 def create_databse():
     with open('database.json', "w") as db:
+        print("Database has been created")
         db.write(json.dumps({'users':[]}))
 
 def check_database(data):
@@ -11,8 +12,9 @@ def check_database(data):
         pass
 
 def add_to_database(data):
-    with open ('database.json', 'w') as db:
+    with open ('database.json', 'a') as db:
         pass
+        
         
 def remove_from_database(data):
     with open('database', 'w') as db: 

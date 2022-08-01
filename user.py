@@ -1,9 +1,8 @@
 class User:
 
-    def __init__(self, name, email, password):
+    def __init__(self, name, password):
         self.name = name
-        self.email = email
-        self.password = None
+        self.password = password
         self.admin = False
         self.logged = False
         self.messages = []
