@@ -7,14 +7,23 @@ def create_databse():
         print("Database has been created")
         db.write(json.dumps({'users':[]}))
 
-def check_database(data):
+def check_if_user_exists_in_database(username):
     with open ('database.json', 'r') as db:
-        pass
+        json_database = json.load(db)
+    for usersname in json_database.get("users",''):
+        if username in usersname.get("user",''):
+            return True
+        else:
+            return False
 
-def add_to_database(data):
-    with open ('database.json', 'a') as db:
-        pass
-        
+def add_user_to_database(user, password):
+    with open ('database.json', 'r') as db:
+        json_database = json.load(db)
+    
+    json_database['users'].append({'user': user, 'password':password})
+    
+    with open("database.json", "w") as db:
+        json.dump(json_database, db)        
         
 def remove_from_database(data):
     with open('database', 'w') as db: 
