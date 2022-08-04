@@ -20,7 +20,7 @@ def add_user_to_database(user, password):
     with open ('database.json', 'r') as db:
         json_database = json.load(db)
     
-    json_database['users'].append({'user': user, 'password':password})
+    json_database['users'].append({'user': user, 'password':password, "mailbox": list()})
     
     with open("database.json", "w") as db:
         json.dump(json_database, db)        
