@@ -6,7 +6,7 @@ from time import strftime
 
 class Connection:
  
-    def __init__(self, host='127.0.0.1', port=7270, buffer=1024, encoder='utf-8', connection_type="SERVER"):
+    def __init__(self, host='127.0.0.1', port=8470, buffer=1024, encoder='utf-8', connection_type="SERVER"):
         self.host = host
         self.port = port
         self.buffer = buffer

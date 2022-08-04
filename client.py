@@ -29,17 +29,18 @@ def menu(user):
 with client as c:
     
     while True:
-        user_input = input("What wuould you like to do?: ")
+        user_input = input("What would you like to do?: ")
         choice = {'choice':user_input}
         if choice.get('choice','') == "stop":
             c.send_json(choice)
             break
         elif choice.get('choice','') == 'create_user':
             name = input("What is your name?: ")
+            choice.update(name=name)
             password = input("What password would you like to have?: ")
-            c.send_json({'choice':choice,'name': name, 'password': password})
-            print("tu bylem")
-        c.send_json(choice)
-        print("tu cos jestem")
+            choice.update(password=password)
+            c.send_json(choice)
+        else:
+            c.send_json(choice)
         data = c.recv_data()
         print(data)
