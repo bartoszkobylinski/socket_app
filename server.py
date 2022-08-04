@@ -4,7 +4,7 @@ import socket as soc
 import json
 from datetime import datetime
 from connection import Connection
-from database import check_if_user_exists_in_database, create_databse, add_user_to_database
+from database import check_if_user_exists_in_database, create_databse, add_user_to_database, authorize_user
 from user import User
 from os.path import exists
  
@@ -47,7 +47,14 @@ def main():
                         message = "New user has been added"
                         sc.send_json(message)
                 case "login":
-                    pass                    
+                    user = User(name = data.get('name'), password=data.get('password'))
+                    if authorize_user(user.name, user.password):
+                        user.logged = True  
+                        message = "You've been logged in"
+                        sc.send_json(message)
+                    else:
+                        message = "Something went wrong with authorization. Try log in again"
+                        sc.send_json(message)
                 case "logout":
                     pass
                 case "send_mail":

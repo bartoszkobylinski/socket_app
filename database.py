@@ -27,11 +27,22 @@ def add_user_to_database(user, password):
         
 def remove_from_database(data):
     with open('database', 'w') as db: 
+
         pass
 
 def update_record_in_databe(data):
     with open('database', 'w') as db:
         pass
+
+def authorize_user(username, password):
+    with open ('database.json','r') as db:
+        json_database = json.load(db)
+
+    for user in json_database.get('users',''):
+        if username == user.get('user','') and password == user.get('password',''):
+            return True
+        else:
+            return False
 
 {
     'users': [
