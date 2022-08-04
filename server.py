@@ -4,7 +4,7 @@ import socket as soc
 import json
 from datetime import datetime
 from connection import Connection
-from database import add_to_database, check_database, create_databse
+from database import check_if_user_exists_in_database, create_databse, add_user_to_database
 from user import User
 from os.path import exists
  
@@ -20,6 +20,7 @@ def main():
             create_databse()
         while True:
             data = sc.recv_data()
+            print(f"to sa dane odebrane przez server: {data} i typ {type(data)}")
             if not data:
                 print("There were some problem with connection. You need to connect again")
                 break
@@ -38,12 +39,12 @@ def main():
                     break
                 case 'create_user':
                     user = User(name = data.get('name'), password=data.get('password'))
-                    print(f"User added such information name: {user.name} and password {user.password}.")
-                    if not user.name in check_database(user.name):
-                        add_to_database(user)
-                        print("New user has been added")
+                    if check_if_user_exists_in_database(user.name):
+                        message = 'User already exists!'
+                        sc.send_json(message)
                     else:
-                        message = "user is already in database. Would you like to login instead of creating user?"
+                        add_user_to_database(user.name, user.password)
+                        message = "New user has been added"
                         sc.send_json(message)
                 case "login":
                     pass                    
@@ -55,10 +56,6 @@ def main():
                     pass
                 case "change password":
                     pass
-
-
-
-
                 case other:
                     message = "there is not such command available"
                     sc.send_json(message)
