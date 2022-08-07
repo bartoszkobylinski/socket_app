@@ -1,7 +1,4 @@
-
-from __future__ import with_statement
 import json
-from turtle import width
 
 
 def create_databse():
@@ -18,17 +15,6 @@ def check_if_user_exists_in_database(username):
         else:
             return False
 
-def check_queryset_in_the_database(**kwargs):
-    with open ('database.json', 'r') as db:
-        json_database = json.load(db)
-
-    for user in json_database.get('users',''):
-        if kwargs in user.get('user',''):
-            return True
-        else:
-            return False
-
-
 def add_user_to_database(user, password):
     with open ('database.json', 'r') as db:
         json_database = json.load(db)
@@ -39,15 +25,18 @@ def add_user_to_database(user, password):
     
     with open("database.json", "w") as db:
         json.dump(json_database, db)        
-        
-def remove_from_database(data):
-    with open('database', 'w') as db: 
 
-        pass
-
-def update_record_in_databe(data):
-    with open('database', 'w') as db:
-        pass
+def change_password_in_user_database(username, password):
+    with open ('database.json','r') as db:
+        json_database = json.load(db)
+    for user in json_database.get("users",''):
+        if username == user.get("user",''):
+            user['password'] = password
+            with open("database.json", "w") as db:
+                json.dump(json_database, db) 
+            return True
+        else:
+            return False
 
 def authorize_user(username, password):
     with open ('database.json','r') as db:

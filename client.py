@@ -38,12 +38,14 @@ with client as c:
         if choice.get('choice','') == "stop":
             c.send_json(choice)
             break
+
         elif choice.get('choice','') == 'create_user':
             name = input("What is your name?: ")
             choice.update(name=name)
             password = input("What password would you like to have?: ")
             choice.update(password=password)
             c.send_json(choice)
+
         elif choice.get('choice','') == 'login':
             name = input('type in your username to login: ')
             password = input('type in your password to log in: ')
@@ -56,12 +58,15 @@ with client as c:
             password = input("please set your new password: ")
             choice.update(password=password, user=user)
             c.send_json(choice)
+
         elif choice.get('choice','') == 'send_mail':
             recipent = input("To whom you want to send message?: ")
             mail_content = input("Type in your message: ")
             choice.update(recipent=recipent, mail_content=mail_content)
             c.send_json(choice)
+            
         else:
             c.send_json(choice)
+
         data = c.recv_data()
         print(data)
