@@ -4,7 +4,7 @@ import socket as soc
 import json
 from datetime import datetime
 from connection import Connection
-from database import check_if_user_exists_in_database, create_databse, add_user_to_database, authorize_user
+from database import check_if_user_exists_in_database, add_message_to_user_mailbox, check_queryset_in_the_database ,create_databse, add_user_to_database, authorize_user
 from user import User
 from os.path import exists
  
@@ -58,10 +58,28 @@ def main():
                 case "logout":
                     pass
                 case "send_mail":
+                    mail_content = data.get("mail_content",'')
+                    recipent = data.get("recipent",'')
+
+                    if add_message_to_user_mailbox(username=recipent, message=mail_content):
+                        message='Your mail has been sent'
+                        sc.send_json(message)
+                    else:
+                        message = "Mailbox of your recipent is full!"
+                        sc.send_json(message)
+
+
+
                     pass
                 case "edit user":
                     pass
+                case "sprawdz":
+                    if check_queryset_in_the_database(data):
+                        print(f"yyyyyyyyyyyyyy")
+
+                    pass
                 case "change password":
+                    user = User()
                     pass
                 case other:
                     message = "there is not such command available"

@@ -50,6 +50,17 @@ with client as c:
             choice.update(name=name)
             choice.update(password=password)
             c.send_json(choice)
+        
+        elif choice.get('choice','') == 'change_password':
+            user = input("what is your username?: ")
+            password = input("please set your new password: ")
+            choice.update(password=password, user=user)
+            c.send_json(choice)
+        elif choice.get('choice','') == 'send_mail':
+            recipent = input("To whom you want to send message?: ")
+            mail_content = input("Type in your message: ")
+            choice.update(recipent=recipent, mail_content=mail_content)
+            c.send_json(choice)
         else:
             c.send_json(choice)
         data = c.recv_data()
