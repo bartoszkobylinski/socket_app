@@ -14,14 +14,29 @@ def check_if_user_exists_in_database(username):
             return True
         else:
             return False
+    
+def read_user_mailbox(username):
+    mailbox_to_show = list()
+    with open('database.json','r') as db:
+        json_database = json.load(db) 
+        for user in json_database.get("users",''):
+            if username == user.get("user",''):
+                unread_mailbox = user.get("unread_mailbox")
+                mailbox_to_show = unread_mailbox
+                user.get("mailbox").extend(unread_mailbox)
+                user["unread_mailbox"] = list()
+        with open("database.json", 'w') as db:
+            json.dump(json_database, db)  
+    return mailbox_to_show
+
 
 def add_user_to_database(user, password):
     with open ('database.json', 'r') as db:
         json_database = json.load(db)
     if len(json_database.get('users','')) < 1:
-        json_database['users'].append({'user': user, 'password':password, "mailbox": list(), 'admin': True})
+        json_database['users'].append({'user': user, 'password':password, "mailbox": list(), 'unread_mailbox':list(), 'admin': True})
     else:
-        json_database['users'].append({'user': user, 'password':password, 'mailbox': list(), 'admin': False})
+        json_database['users'].append({'user': user, 'password':password, 'mailbox': list(), 'unread_mailbox':list(), 'admin': False})
     
     with open("database.json", "w") as db:
         json.dump(json_database, db)        
@@ -47,22 +62,17 @@ def authorize_user(username, password):
             return True
         else:
             return False
+
 def add_message_to_user_mailbox(username, message):
     with open('database.json','r') as db:
         json_database = json.load(db)
 
     for user in json_database.get("users",''):
         if username == user.get("user",''):
-            if len(user.get("mailbox",''))< 5:
-                user.get("mailbox",'').append(message)
+            if len(user.get("unread_mailbox",''))< 5:
+                user.get("unread_mailbox",'').append(message)
                 with open("database.json", "w") as db:
                     json.dump(json_database, db) 
                 return True
             else:
                 return False
-{
-    'users': [
-        {'name':'bartek','email':'kal@wp.pl','password':'jOKotas324',
-        'admin':True, 'logged':False, "messages":['oeuoe','oeuoeu','oeuoeu']}
-    ]
-}

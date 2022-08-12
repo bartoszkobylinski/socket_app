@@ -4,12 +4,14 @@ import socket as soc
 import json
 from datetime import datetime
 from connection import Connection
-from database import change_password_in_user_database, check_if_user_exists_in_database, add_message_to_user_mailbox, check_queryset_in_the_database ,create_databse, add_user_to_database, authorize_user
+from database import change_password_in_user_database, check_if_user_exists_in_database, add_message_to_user_mailbox, create_databse, add_user_to_database, authorize_user, read_user_mailbox
 from user import User
 from os.path import exists
+
+LOGGED_USERS = []
  
 
-def main():
+def main(LOGGED_USERS):
     server = Connection()
 
     
@@ -20,7 +22,6 @@ def main():
             create_databse()
         while True:
             data = sc.recv_data()
-            print(f"to sa dane odebrane przez server: {data} i typ {type(data)}")
             if not data:
                 print("There were some problem with connection. You need to connect again")
                 break
@@ -51,10 +52,18 @@ def main():
                         message = "New user has been added"
                         sc.send_json(message)
                 
+                case "read_mail":
+                    if LOGGED_USERS:
+                        mails = read_user_mailbox(LOGGED_USERS[0])
+                        sc.send_json(mails)
+                    else:
+                        message = 'You have to be logged in to read a mail'
+                        sc.send_json(message)
+                
                 case "login":
                     user = User(name = data.get('name'), password=data.get('password'))
                     if authorize_user(user.name, user.password):
-                        user.logged = True  
+                        LOGGED_USERS.append(user.name)
                         message = "You've been logged in"
                         sc.send_json(message)
                     else:
@@ -62,17 +71,24 @@ def main():
                         sc.send_json(message)
                 
                 case "logout":
-                    pass
-                
-                case "send_mail":
-                    mail_content = data.get("mail_content",'')
-                    recipent = data.get("recipent",'')
+                    if LOGGED_USERS:
+                        LOGGED_USERS.clear()
+                    message = 'You have been logged out'
+                    sc.send_json(message)
 
-                    if add_message_to_user_mailbox(username=recipent, message=mail_content):
-                        message='Your mail has been sent'
-                        sc.send_json(message)
+                case "send_mail":
+                    if LOGGED_USERS:
+                        mail_content = data.get("mail_content",'')
+                        recipent = data.get("recipent",'')
+
+                        if add_message_to_user_mailbox(username=recipent, message=mail_content):
+                            message='Your mail has been sent'
+                            sc.send_json(message)
+                        else:
+                            message = "Mailbox of your recipent is full!"
+                            sc.send_json(message)
                     else:
-                        message = "Mailbox of your recipent is full!"
+                        message = "You have to be logged in to send_mail"
                         sc.send_json(message)
 
                 case "change_password":
@@ -89,4 +105,4 @@ def main():
                     message = "there is not such command available"
                     sc.send_json(message)
 
-main()
+main(LOGGED_USERS=LOGGED_USERS)

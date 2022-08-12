@@ -1,21 +1,11 @@
 from connection import Connection
- 
 
 client = Connection(connection_type='CLIENT')
 
-def menu(user=None):
-    if user is None: 
+def menu(logged=None):
+    if logged: 
         print("""
-        You can choose between this commands to interact with server:
-                - uptime - shows server lifte time
-                - info - returning information about server
-                - stop - stopping server and client works
-                - help - shows available commands 
-                - login - to log in to your profile
-
-        """)
-    elif user.logged:
-        print("""
+        --------------------------------------------------------------------------
         You can choose between this commands to interact with server:
                 - uptime - shows server lifte time
                 - info - returning information about server
@@ -24,10 +14,24 @@ def menu(user=None):
                 - logout - to log out of profile
                 - send_mail - to send message to other user
                 - check_mail - to check your mailbox
-                - change_pass - to change password as long you have admin rights
+                - change_password - to change password as long you have admin rights
+        --------------------------------------------------------------------------
         """)
-    elif user.logged and user.admin:
-        print("cos tam")
+    else:
+        print("""
+        ---------------------------------------------------------------
+        You can choose between this commands to interact with server:
+                - uptime - shows server lifte time
+                - info - returning information about server
+                - stop - stopping server and client works
+                - help - shows available commands 
+                - login - to log in to your profile
+                - logout - to log out of profile
+                - send_mail - to send message to other user
+                - read_mail - to check your mailbox
+                - change_password - to change password as long you have admin rights
+        ---------------------------------------------------------------
+        """)
 
 with client as c:
     
@@ -64,9 +68,14 @@ with client as c:
             mail_content = input("Type in your message: ")
             choice.update(recipent=recipent, mail_content=mail_content)
             c.send_json(choice)
-            
+        
+        elif choice.get('choice', '') == 'read_mail':
+            user = input("what is your name")
+            choice.update(user=user)
+            c.send_json(choice)
         else:
             c.send_json(choice)
 
         data = c.recv_data()
+        print('\n')
         print(data)
