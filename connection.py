@@ -53,11 +53,20 @@ class Connection:
 
     def help(self):
         return '''
-            You can choose between four commands to interact with server:
-            - uptime - shows server lifte time
-            - info - returning information about server
-            - stop - stopping server and client works
-            - help - shows available commands 
+        --------------------------------------------------------------------------
+        You can choose between this commands to interact with server:
+                - uptime - shows server lifte time
+                - info - returning information about server
+                - stop - stopping server and client works
+                - help - shows available commands 
+                - logout - to log out of profile
+                - send_mail - to send message to other user
+                - read_mail - to check your mailbox 
+                - change_password - to change password as long you have admin rights
+                - read_all_mails - to check all unreaded_mails
+                - change_user_password - to change password for user
+                - create_user - to create a user
+        --------------------------------------------------------------------------
             '''
 
     
