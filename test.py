@@ -5,13 +5,14 @@ from user import User
 
 class TestUser(unittest.TestCase):
 
+    def setUp(self):
+        self.user = User(name='bartek', password='halina')
+
     def test_initial_value_of_user_class(self):
-        user = User(name='bartek', password='halina')
-        self.assertIsInstance(user, User)
+        self.assertIsInstance(self.user, User)
     
     def test_string_method(self):
-        user = User(name='bartek', password='tomek')
-        self.assertEqual(str(user), 'bartek logged: False admin: False')
+        self.assertEqual(str(self.user), 'bartek logged: False admin: False')
 
 
 
