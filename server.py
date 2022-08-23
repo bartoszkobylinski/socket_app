@@ -19,9 +19,10 @@ def main(LOGGED_USERS):
     
     with server as sc:
         print(f"Connected by {server.address}")
-        database_exists = exists('database.json')
+        database_name = 'database.json'
+        database_exists = exists(database_name)
         if not database_exists:
-            create_databse()
+            create_databse(database_name)
         while True:
             data = sc.recv_data()
             if not data:

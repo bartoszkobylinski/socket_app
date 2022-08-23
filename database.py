@@ -1,8 +1,8 @@
 import json
 
 
-def create_databse():
-    with open('database.json', "w") as db:
+def create_databse(name):
+    with open(name, "w") as db:
         print("Database has been created")
         db.write(json.dumps({'users':[]}))
 
