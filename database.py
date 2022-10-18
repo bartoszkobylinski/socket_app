@@ -9,8 +9,8 @@ def create_databse(name):
 def check_if_user_exists_in_database(username, database_name = 'database.json'):
     with open (database_name, 'r') as db:
         json_database = json.load(db)
-    for usersname in json_database.get("users",''):
-        if username in usersname.get("user",''):
+    for user in json_database.get("users",''):
+        if username == user.get("user",''):
             return True
         else:
             return False
@@ -33,21 +33,16 @@ def read_all_user_mailbox(database_name = 'database.json'):
     with open (database_name,'r') as db:
         all_unread_mailbox = list()
         json_database = json.load(db)
-        print(f"to jest baza danych po zaladowaniu: {json_database}")
+        print(f"to zawartosc bazy danych: {json_database}")
         for user in json_database.get("users",''):
-            print(f"jestesmy na takim user: {user}")
             unread_mailbox = user.get("unread_mailbox")
-            print(f"to est {user.get('unread_mailbox')}")
+            print(f"to jest zawartosc unread_mailbox: {unread_mailbox}")
             all_unread_mailbox.append({'user':user.get("user",''), 'unread_mailbox': unread_mailbox})
-            print(f"to jest w all_unread_mailbox: {all_unread_mailbox}")
-            print(f"to jest dlugosc {len(all_unread_mailbox)}")
             user.get("mailbox").extend(unread_mailbox)
             user['unread_mailbox'] = list()
+            print(f"to jest zawartosc all_unread_mailbox: {all_unread_mailbox}")
         with open(database_name, 'w') as db:
             json.dump(json_database, db) 
-        for user in all_unread_mailbox:
-            print("-------")
-            print(user)
     return all_unread_mailbox
 
 
