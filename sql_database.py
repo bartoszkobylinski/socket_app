@@ -23,12 +23,16 @@ finally:
         db_connection.close()
         print("PostgreSQL connection is closed")
 
-def create_table():
+def connect_to_database_and_set_cursor():
     db_connection = psycopg2.connect(user='bartoszkobylinski',
     host = '127.0.0.1',
     port = '5432',
     database = 'bartoszkobylinski')
     cursor = db_connection.cursor()
+    return cursor
+
+def create_table():
+    cursor = connect_to_database_and_set_cursor()
     table_creation_query = (''' 
     CREATE TABLE users (
         user_id INTEGER PRIMARY KEY,
@@ -46,12 +50,9 @@ def create_table():
     ''')
     for query in table_creation_query:
         cursor.execute(query)
-    
     print("table have been created!")
     cursor.close()
     db_connection.commit()
-
-#create_table()
 
 #database_queries
 
@@ -78,14 +79,30 @@ def add_username_to_postgresql(username, password, admin):
         cursor = db_connection.cursor()
         query = '''INSERT INTO users (user_name, password, admin) VALUES (%s, %s, %s)'''
         values = username, password, admin  
-        data = cursor.execute(query, values)
-        print(f"here is data:{data}")
+        cursor.execute(query, values)
+        print("User added to database")
         db_connection.commit()
         db_connection.close()
     else:
         print("User already exists!")
 
-add_username_to_postgresql('marian','noeuhhkostah.cr', False)
+def change_user_password_in_postgresql(username, password):
+    db_connection = psycopg2.connect(user='bartoszkobylinski',
+    host = '127.0.0.1',
+    port = '5432',
+    database = 'bartoszkobylinski')
+    cursor = db_connection.cursor()
+
+def read_user_mailbox(username):
+    db_connection = psycopg2.connect(user='bartoszkobylinski',
+        host = '127.0.0.1',
+        port = '5432',
+        database = 'bartoszkobylinski')
+    cursor = db_connection.cursor()
+    query = f'''SELECT * FROM mailboxes WHERE user_name='{username}';'''
+    cursor.execute(query)
+    mails = cursor.fetchall()
+    return mails
     
 
 def update_query_in_postgresql(query):
