@@ -1,9 +1,11 @@
+from dataclasses import dataclass
 from sqlite3 import connect
-from database import check_if_user_exists_in_database
+from database import change_password_in_user_database, check_if_user_exists_in_database
 from multiprocessing import connection
 import psycopg2
 from psycopg2 import Error
 
+'''
 try:
     db_connection = psycopg2.connect(user='bartoszkobylinski',
     host = '127.0.0.1',
@@ -23,6 +25,7 @@ finally:
         cursor.close()
         db_connection.close()
         print("PostgreSQL connection is closed")
+'''
 
 def connect_to_database():
     db_connection = psycopg2.connect(user='bartoszkobylinski',
@@ -85,13 +88,15 @@ def change_user_password_in_postgresql(username, password):
     updated_rows = 0
     database = connect_to_database()
     cursor = database.cursor()
-    query = '''UPDATE users SET password = %s WHERE user_name=%s'''
+    query = f"""UPDATE users SET password = '{password}' WHERE user_name='{username}'"""
     cursor.execute(query,(username,password))
     # it should be acces to connection for commiting!
     updated_rows = cursor.rowcount
     database.commit()
     database.close()
     return updated_rows
+
+change_user_password_in_postgresql('janina','jajajaja')
 
 def check_credentials_in_postgresql(username, password):
     database = connect_to_database()
@@ -110,26 +115,34 @@ def check_credentials_in_postgresql(username, password):
 
 
 def read_user_mailbox(username):
-    db_connection = psycopg2.connect(user='bartoszkobylinski',
-        host = '127.0.0.1',
-        port = '5432',
-        database = 'bartoszkobylinski')
-    cursor = db_connection.cursor()
+    database = connect_to_database()
+    cursor = database.cursor()
     query = f'''SELECT * FROM mailboxes WHERE user_name='{username}';'''
     cursor.execute(query)
     mails = cursor.fetchall()
     return mails
+
+def add_message_to_sql_database(username, message):
+    database = connect_to_database()
+    cursor = database.cursor()
+    query = f"""INSERT INTO mailboxes (user_name, message) VALUES ('{username}', '{message}')"""
+    cursor.execute(query,(username, message))
+    database.commit()
+    rc = cursor.rowcount
+    database.close()
+    if rc == 1:
+        return True
+    else:
+        return False
     
-
-def update_query_in_postgresql(query):
-    pass
- 
-
-
-
-
-def check_if_user_exist_in_postgresql(username):
-    pass
-
-def add_user_to_postgresql(username, password):
-    pass
+def unreaded_mailbox_is_full(username):
+    database = connect_to_database()
+    cursor = database.cursor()
+    query = f"""SELECT * FROM mailboxes WHERE user_name='{username}'"""
+    cursor.execute(query)
+    print(cursor.rowcount)
+    database.close()
+    if cursor.rowcount > 4:
+        return True
+    else:
+        return False
